@@ -1519,16 +1519,9 @@ int rockchip_soc_sys_pwr_dm_resume(void)
 
 void __dead2 rockchip_soc_soft_reset(void)
 {
-	struct bl_aux_gpio_info *rst_gpio;
-
-	rst_gpio = plat_get_rockchip_gpio_reset();
-
-	if (rst_gpio) {
-		gpio_set_direction(rst_gpio->index, GPIO_DIR_OUT);
-		gpio_set_value(rst_gpio->index, rst_gpio->polarity);
-	} else {
-		soc_global_soft_reset();
-	}
+	mmio_write_32(PMUGRF_BASE + PMUGRF_GPIO1A_IOMUX, GPIO1A6_IOMUX);
+	gpio_set_direction(TSADC_INT_PIN, GPIO_DIR_OUT);
+	gpio_set_value(TSADC_INT_PIN, 1);
 
 	while (1)
 		;
